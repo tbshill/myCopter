@@ -39,7 +39,9 @@
 #define NAV_OFF 0x03
 
 boolean arm = false;
-
+float Pgain = 1;
+float Igain = 0;
+float Dgain = 0;
 void setup(){
   pinMode(lRED, OUTPUT);
   pinMode(lYELLOW, OUTPUT);
@@ -76,11 +78,24 @@ void setup(){
 }
 
 void loop(){
+  int P =0 ;
+  int yi=0;
+  int xi=0;
+  int t =0;
+  
   int X = AccelX(ChipSelPin1);
   int Y = AccelY(ChipSelPin1);
   int Z = AccelZ(ChipSelPin1);
   
-  Serial.print(X);
+  mfr = P - yi -xi -t;
+  mfl = P - yi +xi +t;
+  mbr = P + yi -xi +t;
+  mbl = P + yi +xi -t;
+
+  analogWrite(mFR, mfr);
+  analogWrite(mFL,mfl);
+  analogWrite(mBL,mbl);
+  analogWrite(mBR,mbr);
 }
 
 
