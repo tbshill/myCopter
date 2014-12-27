@@ -8,7 +8,7 @@ properties.txt: A properties file for the command-line interface
 
 mainQuadCode: Arduino sketch for the ardupilot
 
---------
 resources: text files of my Blog so I can work on the project offline
 
+-------
 ignore 'C++'
