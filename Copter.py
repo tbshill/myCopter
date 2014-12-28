@@ -6,24 +6,33 @@ class Copter:
         self.properties = {}
         self.arm = False
         self.propFile = propFile
-        self.pilot = serial.Serial('/dev/ttyACM0',9600)
+        self.pilot = serial.Serial('/dev/ttyACM0',9600) #Try and automate the Com port
     def Arm(self):
         self.arm = True
+        self.pilot.write("\x00")
     def unArm(self):
         self.arm = False
+        self.pilot.write("\x01")
     def isArm(self):
         return self.arm
     def establish(self):
-        while True:
-            print(self.pilot.read())
+        self.pilot.write("\xFF\xFF\xFF\xFF")
+    def killConnection(self):
+        self.pilot.close()
     def send(self,data):
-        self.pilot.write("\xFF")
-        print("wrote 0xFF")
-        print(self.pilot.read().encode('hex'))
+        self.pilot.write("\xFF\x00\x33\x55")
+        print("sent")
+        print(self.pilot.readline())
     def startGyro(self):
         print(0x01)
     def stopGyro(self):
         print(0x02)
+    def test(self):
+        if self.arm == false:
+            print("Testing motors. Please see if the motors turn on in the fallowing order: FR, FL BR, BL")
+            self.pilot.write("\x04\x00\x00\x00")
+        else:
+            print("Please unarm the quadcopter and try again")
     def updateProperties(self):
         file = open(self.propFile,'wr')
         data = ""

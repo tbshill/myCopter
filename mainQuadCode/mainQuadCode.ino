@@ -34,18 +34,35 @@
 
 //COMMUNICATION 
 #define ARM 0x00
-#define UMARM 0x01
+#define UNARM 0x01
 #define NAV_ON 0x02
 #define NAV_OFF 0x03
+#define TEST 0x04
+
+boolean established = false;
 
 boolean arm = false;
 float Pgain = 1;
 float Igain = 0;
 float Dgain = 0;
+
+int p =0 ;
+int yi=0;
+int xi=0;
+int t =0;
+int mfr = 0;
+int mfl = 0;
+int mbl = 0;
+int mbr = 0;
+
+
 void setup(){
   pinMode(lRED, OUTPUT);
   pinMode(lYELLOW, OUTPUT);
   pinMode(lBLUE, OUTPUT);
+  digitalWrite(lRED, HIGH);
+  digitalWrite(lBLUE,HIGH);
+  digitalWrite(lYELLOW,HIGH);
   
   //MOTOR OUTPUT
   pinMode(M1,OUTPUT);
@@ -74,30 +91,91 @@ void setup(){
   SPI.setDataMode(SPI_MODE0);
   delay(100);
   pinMode(ChipSelPin1,OUTPUT);
-  ConfigureMPU6000();  
+  ConfigureMPU6000();
+
+    
 }
 
 void loop(){
-  int P =0 ;
-  int yi=0;
-  int xi=0;
-  int t =0;
-  
-  int X = AccelX(ChipSelPin1);
-  int Y = AccelY(ChipSelPin1);
-  int Z = AccelZ(ChipSelPin1);
-  
-  mfr = P - yi -xi -t;
-  mfl = P - yi +xi +t;
-  mbr = P + yi -xi +t;
-  mbl = P + yi +xi -t;
+  if(arm == false){ //IF Quad is not armed
+    analogWrite(mFR, 100); //keep all motors off
+    analogWrite(mFL, 100);
+    analogWrite(mBR, 100);
+    analogWrite(mBL, 100);
+    digitalWrite(lYELLOW,HIGH);
+  }
+  if(established == false){
+    if(Serial.available() > 0){
+      delay(50);
+      int b1 = Serial.read();
+      int b2 = Serial.read();
+      int b3 = Serial.read();
+      int b4 = Serial.read();
+      arm = false;
+      if( b1 == 255 && 
+          b2 == 255 && 
+          b3 == 255 && 
+          b4 == 255){
+        established = true;
+        digitalWrite(lBLUE, LOW);
+      }
 
-  analogWrite(mFR, mfr);
-  analogWrite(mFL,mfl);
-  analogWrite(mBL,mbl);
-  analogWrite(mBR,mbr);
+    }
+  }
+  else{ //IF ESTABLISHED
+    if(Serial.available() > 0){
+      delay(100);
+      int b1 = Serial.read();
+      int b2 = Serial.read();
+      int b3 = Serial.read();
+      int b4 = Serial.read();
+      
+      if(b1 == ARM){
+        arm = true;
+        digitalWrite(lYELLOW, LOW);
+      }
+      else if(b1 == UNARM){
+        arm = false;
+      }
+      else if(b1 == TEST && arm == false){
+        digitalWrite(lYELLOW, HIGH);
+        digitalWrite(lRED, HIGH);
+        digitalWrite(lBLUE,HIGH);
+        delay(500);
+        flashLED(250);
+        flashLED(250);
+        flashLED(250);
+        
+        analogWrite(mFR,148);
+        delay(1000);
+        analogWrite(mFR,100);
+        analogWrite(mFL,148);
+        delay(1000);
+        analogWrite(mFL,100);
+        analogWrite(mBR,148);
+        delay(1000);
+        analogWrite(mBR,100);
+        analogWrite(mBL,148);
+        delay(1000);
+        analogWrite(mBL,100);
+        
+        flashLED(500);
+        
+      }
+    }
+  }
 }
 
+void flashLED(int time){
+  digitalWrite(lYELLOW, LOW);
+  digitalWrite(lRED, LOW);
+  digitalWrite(lBLUE,LOW);
+  delay(time);
+  digitalWrite(lYELLOW, HIGH);
+  digitalWrite(lRED, HIGH);
+  digitalWrite(lBLUE,HIGH);
+  delay(time);
+}
 
 void SPIwrite(byte reg, byte data, int ChipSelPin){
   uint8_t dump;

@@ -27,6 +27,8 @@ if __name__ == "__main__":
         x = inp.split("-")
         if x[0] == "establish":
             quad.establish()
+        elif x[0] == "close":
+            quad.killConnection()
         elif x[0]== "properties":
             if len(x) == 1:
                 print("")
@@ -59,6 +61,8 @@ if __name__ == "__main__":
                 quad.stopGyro()
         elif x[0] == "serialmonitor":
             quad.serialMonitor()
+        elif x[0] == "test":
+            quad.test()
         elif x[0] == "help":
             t = """
 establish:   establish connection with ardupiolet
