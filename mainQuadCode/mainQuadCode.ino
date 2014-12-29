@@ -24,20 +24,40 @@
 #define M7 2
 #define M8 5
 
+#define A0 54
+#define A1 55
+#define A2 56
+#define A3 57
+#define A4 58
+#define A5 59
+#define A6 60
+#define A7 61
+#define A8 621
 
-#define mFR M1
-#define mFL M2
-#define mBR M3
-#define mBL M4
+#define mFR M4 //M8
+#define mFL M6 //M6
+#define mBR M8 //M5
+#define mBL M5 //M4
+
+#define lFR A7 //RED WIRE
+#define lFL A6 //BROWN
+#define lBL A4 //YELLOW
+#define lBR A5 //WHITE
 
 #define BAUDRATE 9600
 
 //COMMUNICATION 
 #define ARM 0x00
 #define UNARM 0x01
-#define NAV_ON 0x02
-#define NAV_OFF 0x03
+#define NAV 0x02
+#define ALL 0x00
+#define LFR 0x01
+#define LFL 0x02
+#define LBR 0x03
+#define LBL 0x04
 #define TEST 0x04
+#define ON 0x01
+#define OFF 0x00
 
 boolean established = false;
 
@@ -46,10 +66,10 @@ float Pgain = 1;
 float Igain = 0;
 float Dgain = 0;
 
-int p =0 ;
-int yi=0;
-int xi=0;
-int t =0;
+int p = 0;
+int yi= 0;
+int xi= 0;
+int t = 0;
 int mfr = 0;
 int mfl = 0;
 int mbl = 0;
@@ -119,7 +139,6 @@ void loop(){
         established = true;
         digitalWrite(lBLUE, LOW);
       }
-
     }
   }
   else{ //IF ESTABLISHED
@@ -129,6 +148,7 @@ void loop(){
       int b2 = Serial.read();
       int b3 = Serial.read();
       int b4 = Serial.read();
+      int b5 = Serial.read();
       
       if(b1 == ARM){
         arm = true;
@@ -137,7 +157,7 @@ void loop(){
       else if(b1 == UNARM){
         arm = false;
       }
-      else if(b1 == TEST && arm == false){
+      else if(b1 == TEST && arm == false){ //TEST MOTORS
         digitalWrite(lYELLOW, HIGH);
         digitalWrite(lRED, HIGH);
         digitalWrite(lBLUE,HIGH);
@@ -162,8 +182,73 @@ void loop(){
         flashLED(500);
         
       }
-    }
-  }
+      else if(b1 == NAV){
+        if(b2 == ALL){
+          if(b3 == ON){
+            analogWrite(lFR,255);
+            analogWrite(lFL,255);
+            analogWrite(lBL,255);
+            analogWrite(lBR,255);
+          }
+          else if(b3 == OFF){
+            analogWrite(lFR,0);
+            analogWrite(lFL,0);
+            analogWrite(lBL,0);
+            analogWrite(lBR,0);
+          }
+        }
+        else if(b2 == LFR){
+          if(b3 == ON){
+            analogWrite(lFR,255);
+          }
+          else if(b3 == OFF){
+            analogWrite(lFR,0);
+          }
+        }
+        else if(b2 == LFL){
+          if(b3 == ON){
+            analogWrite(lFL,255);
+          }
+          else if(b3 == OFF){
+            analogWrite(lFL,0);
+          }
+        }
+        else if(b2 == LBL){
+          if(b3 == ON){
+            analogWrite(lBL,255);
+          }
+          else if(b3 == OFF){
+            analogWrite(lBL,0);
+          }
+        }
+        else if(b2 == LBR){
+          if(b3 == ON){
+            analogWrite(lBR,255);
+          }
+          else if(b3 == OFF){
+            analogWrite(lBR,0);
+          }
+        }
+      }//END OF NAV
+      else if(b1 == CONTROL){
+        Power = b2;
+        XStrafe = b3;
+        YStrafe = b4;
+        Turn = b5;
+        
+        int fr = Power + YStrafe + XStrafe + Turn;
+        int fl = Power + YStrafe + XStrafe + Turn;
+        int br = Power + YStrafe + XStrafe + Turn;
+        int bl = Power + YStrafe + XStrafe + Turn;
+        
+        analogWrite(mFR,fr);
+        analogWrite(mFL,fl);
+        analogWrite(mBR,br);
+        analogWrite(mBL,bl);
+      }
+    }//END OF SERIAL
+    
+  }//END OF ESTABLISHED
 }
 
 void flashLED(int time){

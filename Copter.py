@@ -20,15 +20,14 @@ class Copter:
     def killConnection(self):
         self.pilot.close()
     def send(self,data):
-        self.pilot.write("\xFF\x00\x33\x55")
+        self.pilot.write(data)
         print("sent")
-        print(self.pilot.readline())
     def startGyro(self):
         print(0x01)
     def stopGyro(self):
         print(0x02)
     def test(self):
-        if self.arm == false:
+        if self.arm == False:
             print("Testing motors. Please see if the motors turn on in the fallowing order: FR, FL BR, BL")
             self.pilot.write("\x04\x00\x00\x00")
         else:

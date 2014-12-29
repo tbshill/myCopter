@@ -49,6 +49,32 @@ if __name__ == "__main__":
             quad.unArm()
         elif x[0] == "isarm":
             print(quad.isArm())
+        elif x[0] == "nav":
+            if x[1] == "all":
+                if x[2] == "on":
+                    quad.send("\x02\x00\x01\x00")
+                elif x[2] == "off":
+                    quad.send("\x02\x00\x00\x00")
+            elif x[1] == "fr":
+                if x[2] == "on":
+                    quad.send("\x02\x01\x01\x00")
+                elif x[2] == "off":
+                    quad.send("\x02\x01\x00\x00")
+            elif x[1] == "fl":
+                if x[2] == "on":
+                    quad.send("\x02\x02\x01\x00")
+                elif x[2] == "off":
+                    quad.send("\x02\x02\x00\x00")
+            elif x[1] == "br":
+                if x[2] == "on":
+                    quad.send("\x02\x03\x01\x00")
+                elif x[2] == "off":
+                    quad.send("\x02\x03\x00\x00")
+            elif x[1] == "bl":
+                if x[2] == "on":
+                    quad.send("\x02\x04\x01\x00")
+                elif x[2] == "off":
+                    quad.send("\x02\x04\x00\x00")
         elif x[0] == "propFile":
             print(quad.propFile)
         elif x[0] == "send":
