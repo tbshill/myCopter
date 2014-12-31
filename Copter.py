@@ -22,9 +22,9 @@ class Copter:
     def send(self,data):
         self.pilot.write(data)
         print("sent")
-    def startGyro(self):
+    def startGyro(self): #Not used
         print(0x01)
-    def stopGyro(self):
+    def stopGyro(self): #Not used
         print(0x02)
     def test(self):
         if self.arm == False:
