@@ -1,3 +1,4 @@
+
 #include <SPI.h>
 #include <math.h>
 
@@ -124,6 +125,7 @@ void loop(){
     analogWrite(mBL, 100);
     digitalWrite(lYELLOW,HIGH);
   }
+
   if(established == false){
     if(Serial.available() > 0){
       delay(50);
@@ -231,10 +233,10 @@ void loop(){
         }
       }//END OF NAV
       else if(b1 == CONTROL){
-        Power = b2;
-        XStrafe = b3;
-        YStrafe = b4;
-        Turn = b5;
+        int Power = b2;
+        int XStrafe = b3;
+        int YStrafe = b4;
+        int Turn = b5;
         
         int fr = Power + YStrafe + XStrafe + Turn;
         int fl = Power + YStrafe + XStrafe + Turn;
@@ -269,7 +271,6 @@ void SPIwrite(byte reg, byte data, int ChipSelPin){
   dump = SPI.transfer(data);
   digitalWrite(ChipSelPin,HIGH);
 }
-
 uint8_t SPIread(byte reg, int ChipSelPin){
   uint8_t dump;
   uint8_t return_value;
@@ -280,7 +281,6 @@ uint8_t SPIread(byte reg, int ChipSelPin){
   digitalWrite(ChipSelPin,HIGH);
   return(return_value);
 }
-
 int AccelX(int ChipSelPin){
   uint8_t h = SPIread(0x3B,ChipSelPin);
   uint8_t l = SPIread(0x3C,ChipSelPin);
@@ -311,7 +311,6 @@ int GyroY(int ChipSelPin){
   uint16_t Gyroy = h<<8 |l;
  return(Gyroy); 
 }
-
 int GyroZ(int ChipSelPin){
   uint8_t h = SPIread(0x47,ChipSelPin);
   uint8_t l = SPIread(0x48,ChipSelPin);
@@ -333,7 +332,4 @@ void ConfigureMPU6000(){
   delay(150);
   SPIwrite(0x1C,0x00,ChipSelPin1);
   delay(150);
-  
 }
-
-
