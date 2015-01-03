@@ -27,6 +27,8 @@ if __name__ == "__main__":
         x = inp.split("-")
         if x[0] == "establish":
             quad.establish()
+        elif x[0] == "control":
+            quad.control(x[1],x[2],x[3],x[4])
         elif x[0] == "close":
             quad.killConnection()
         elif x[0]== "properties":

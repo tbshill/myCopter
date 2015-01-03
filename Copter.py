@@ -26,6 +26,16 @@ class Copter:
         print(0x01)
     def stopGyro(self):
         print(0x02)
+    def control(self,p,y,x,t):
+        data = bytearray()
+        print(int(p)+int(x))
+        data.append(0x03)
+        data.append(int(p))
+        data.append(int(y))
+        data.append(int(x))
+        data.append(int(t))
+        
+        self.pilot.write(data)
     def test(self):
         if self.arm == False:
             print("Testing motors. Please see if the motors turn on in the fallowing order: FR, FL BR, BL")

@@ -10,5 +10,3 @@ mainQuadCode: Arduino sketch for the ardupilot
 
 resources: text files of my Blog so I can work on the project offline
 
--------
-ignore 'C++'
