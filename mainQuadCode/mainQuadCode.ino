@@ -12,6 +12,7 @@
 
 #define Aoffest 0.8
 #define ChipSelPin1 53 //SPI select pin for the MPU6000
+#define MPU6000 53
 
 //arduino pins for the LED lights on the Ardupilot
 #define lRED 27 
@@ -246,7 +247,24 @@ void loop(){
         analogWrite(mBL,bl);
       }//END OF CONTROL
     }//END OF SERIAL
-    
+
+    int accel_x = AccelX(MPU6000);
+    int accel_y = AccelY(MPU6000);
+    int accel_z = AccelZ(MPU6000);
+    int gyro_x  = GyroX(MPU6000);
+    int gyro_y  = GyroY(MPU6000);
+    int gyro_z  = GyroZ(MPU6000);
+
+    int desired_x = 0; //Angles 
+    int desired_y = 0; //Angles
+    int desired_z = 0; //Angles
+
+    int actual_x = tan(accel_z/accel_x);
+    int actual_y = tan(accel_z/accel_y);
+
+    int error_x = actual_x - desired_x;
+    int error_y = actual_y - desired_y;
+
   }//END OF 'ELSE' ESTABLISHED
 }
 
