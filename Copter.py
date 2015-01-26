@@ -6,7 +6,7 @@ class Copter:
         self.properties = {}
         self.arm = False
         self.propFile = propFile
-        self.pilot = serial.Serial('/dev/ttyACM0',9600) #Try and automate the Com port
+        self.pilot = serial.Serial('/dev/ttyS0',9600) #Try and automate the Com port
     def Arm(self):
         self.arm = True
         self.pilot.write("\x00")
