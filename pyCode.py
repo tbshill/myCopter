@@ -2,6 +2,16 @@
 #!clear
 import optparse
 from Copter import Copter
+
+class Colors:
+    header = '\033[95m'
+    blue = '\033[94m'
+    green= '\033[92m'
+    warning= '\033[93m'
+    fail = '\033[91m'
+    end = '\033[0m'
+    bold = '\033[1m'
+
 def getProperties():
     properties = {}
     file = open(r"/quad/properties.txt")
@@ -18,12 +28,12 @@ if __name__ == "__main__":
     options, arguments = p.parse_args()
     
     print("")
-    print("Welcome to Quadcopter")
+    print(Colors.green+ "Welcome to Quadcopter"+Colors.end)
     quad = Copter(options.propFile) 
     quad.properties = getProperties() #Load Properties
     
     while(True):
-        inp = raw_input("::> ")
+        inp = raw_input(Colors.blue+"::> "+Colors.end)
         x = inp.split("-")
         if x[0] == "establish":
             quad.establish()
@@ -109,7 +119,7 @@ isarm:       displays if the quadcopter is armed
             pass
         
         else:
-            print("!!! Not Valid -- user 'help' !!!")
+            print(Colors.fail+"!!! Not Valid -- user 'help' !!!"+Colors.end)
 
 
 

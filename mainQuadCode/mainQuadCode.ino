@@ -69,12 +69,9 @@
 #define TEST 0x04
 #define ON 0x01
 #define OFF 0x00
-<<<<<<< HEAD
 #define CONTROL 0x03
-=======
 #define CONTROL 0x05
 
->>>>>>> 3315b9040644015e9dab77e4de10860fecc339bb
 boolean established = false; //global variable that shows if the quadcopter has established a connection with the raspberry pi. 
 //Motors can't run  if this is false
 
