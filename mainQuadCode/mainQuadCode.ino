@@ -69,6 +69,7 @@
 #define TEST 0x04
 #define ON 0x01
 #define OFF 0x00
+#define CONTROL 0x05
 
 boolean established = false; //global variable that shows if the quadcopter has established a connection with the raspberry pi. 
 //Motors can't run  if this is false
@@ -119,7 +120,7 @@ void setup(){ //Setup
   SPI.setDataMode(SPI_MODE0);
   delay(100);
   pinMode(ChipSelPin1,OUTPUT);
-  ConfigureMPU6000();
+  ConfigureMPU6000(MPU6000);
 }
 
 void loop(){
@@ -265,6 +266,10 @@ void loop(){
     int error_x = actual_x - desired_x;
     int error_y = actual_y - desired_y;
 
+    Serial.print(actual_x);
+    Serial.print("\t");
+    Serial.println(actual_y);
+
   }//END OF 'ELSE' ESTABLISHED
 }
 
@@ -280,7 +285,6 @@ void flashLED(int time){
   delay(time);
 }
 
-//The below code is not my own. It is the communication with the MPU6000(Accelerometer and Gyroscope) and I took it from then internet. I have a blog post about where I found it. 
 void SPIwrite(byte reg, byte data, int ChipSelPin){
   uint8_t dump;
   digitalWrite(ChipSelPin, LOW);
@@ -334,19 +338,19 @@ int GyroZ(int ChipSelPin){
   uint16_t Gyroz = h<<8 |l;
  return(Gyroz); 
 }
-void ConfigureMPU6000(){
-  SPIwrite(0x6B,0x80,ChipSelPin1);
+void ConfigureMPU6000(int ChipSelPin){
+  SPIwrite(0x6B,0x80,ChipSelPin);
   delay(150);
-  SPIwrite(0x6B,0x03,ChipSelPin1);
+  SPIwrite(0x6B,0x03,ChipSelPin);
   delay(150);
-  SPIwrite(0x6A,0x10,ChipSelPin1);
+  SPIwrite(0x6A,0x10,ChipSelPin);
   delay(150);
-  SPIwrite(0x19,0x00,ChipSelPin1);
+  SPIwrite(0x19,0x00,ChipSelPin);
   delay(150);
-  SPIwrite(0x1A,0x03,ChipSelPin1);
+  SPIwrite(0x1A,0x03,ChipSelPin);
   delay(150);
-  SPIwrite(0x1B,0x00,ChipSelPin1);
+  SPIwrite(0x1B,0x00,ChipSelPin);
   delay(150);
-  SPIwrite(0x1C,0x00,ChipSelPin1);
+  SPIwrite(0x1C,0x00,ChipSelPin);
   delay(150);
 }
