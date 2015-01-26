@@ -12,6 +12,7 @@
 
 #define Aoffest 0.8
 #define ChipSelPin1 53 //SPI select pin for the MPU6000
+#define MPU6000 53
 
 //arduino pins for the LED lights on the Ardupilot
 #define lRED 27 
@@ -68,7 +69,12 @@
 #define TEST 0x04
 #define ON 0x01
 #define OFF 0x00
+<<<<<<< HEAD
 #define CONTROL 0x03
+=======
+#define CONTROL 0x05
+
+>>>>>>> 3315b9040644015e9dab77e4de10860fecc339bb
 boolean established = false; //global variable that shows if the quadcopter has established a connection with the raspberry pi. 
 //Motors can't run  if this is false
 
@@ -118,7 +124,7 @@ void setup(){ //Setup
   SPI.setDataMode(SPI_MODE0);
   delay(100);
   pinMode(ChipSelPin1,OUTPUT);
-  ConfigureMPU6000();
+  ConfigureMPU6000(MPU6000);
 }
 
 void loop(){
@@ -246,7 +252,28 @@ void loop(){
         analogWrite(mBL,bl);
       }//END OF CONTROL
     }//END OF SERIAL
-    
+
+    int accel_x = AccelX(MPU6000);
+    int accel_y = AccelY(MPU6000);
+    int accel_z = AccelZ(MPU6000);
+    int gyro_x  = GyroX(MPU6000);
+    int gyro_y  = GyroY(MPU6000);
+    int gyro_z  = GyroZ(MPU6000);
+
+    int desired_x = 0; //Angles 
+    int desired_y = 0; //Angles
+    int desired_z = 0; //Angles
+
+    int actual_x = tan(accel_z/accel_x);
+    int actual_y = tan(accel_z/accel_y);
+
+    int error_x = actual_x - desired_x;
+    int error_y = actual_y - desired_y;
+
+    Serial.print(actual_x);
+    Serial.print("\t");
+    Serial.println(actual_y);
+
   }//END OF 'ELSE' ESTABLISHED
 }
 
@@ -262,7 +289,6 @@ void flashLED(int time){
   delay(time);
 }
 
-//The below code is not my own. It is the communication with the MPU6000(Accelerometer and Gyroscope) and I took it from then internet. I have a blog post about where I found it. 
 void SPIwrite(byte reg, byte data, int ChipSelPin){
   uint8_t dump;
   digitalWrite(ChipSelPin, LOW);
@@ -316,19 +342,19 @@ int GyroZ(int ChipSelPin){
   uint16_t Gyroz = h<<8 |l;
  return(Gyroz); 
 }
-void ConfigureMPU6000(){
-  SPIwrite(0x6B,0x80,ChipSelPin1);
+void ConfigureMPU6000(int ChipSelPin){
+  SPIwrite(0x6B,0x80,ChipSelPin);
   delay(150);
-  SPIwrite(0x6B,0x03,ChipSelPin1);
+  SPIwrite(0x6B,0x03,ChipSelPin);
   delay(150);
-  SPIwrite(0x6A,0x10,ChipSelPin1);
+  SPIwrite(0x6A,0x10,ChipSelPin);
   delay(150);
-  SPIwrite(0x19,0x00,ChipSelPin1);
+  SPIwrite(0x19,0x00,ChipSelPin);
   delay(150);
-  SPIwrite(0x1A,0x03,ChipSelPin1);
+  SPIwrite(0x1A,0x03,ChipSelPin);
   delay(150);
-  SPIwrite(0x1B,0x00,ChipSelPin1);
+  SPIwrite(0x1B,0x00,ChipSelPin);
   delay(150);
-  SPIwrite(0x1C,0x00,ChipSelPin1);
+  SPIwrite(0x1C,0x00,ChipSelPin);
   delay(150);
 }

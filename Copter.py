@@ -1,6 +1,6 @@
 import serial
 import time
-import RPi.GPIO as gpio
+#import RPi.GPIO as gpio
 class Copter:
     def __init__(self,propFile = ""):
         self.properties = {}
