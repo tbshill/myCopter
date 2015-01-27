@@ -1,6 +1,7 @@
 #include <SPI.h> //Includes
 #include <math.h>
 #include "Definitions.h"
+#include "Communication_Definitions.h"
 
 boolean established = false; //global variable that shows if the quadcopter has established a connection with the raspberry pi. 
 //Motors can't run  if this is false
@@ -12,12 +13,29 @@ float Pgain = 1;
 float Igain = 0;
 float Dgain = 0;
 
+int fr = 0;
+int fl = 0;
+int br = 0;
+int bl = 0;
+
+int accel_x = 0;
+int accel_y = 0;
+int accel_z = 0;
+int gyro_x = 0;
+int gyro_y = 0;
+int gyro_z = 0;
+
+int Power = 0;
+int XStrafe = 0;
+int YStrafe = 0;
+int Turn = 0;
+
 void setup(){ //Setup
   //Set the onboard LED's to output
   pinMode(lRED, OUTPUT);
   pinMode(lYELLOW, OUTPUT);
   pinMode(lBLUE, OUTPUT);
-  //The are active low, so this code turns the LEDs off
+  //They are active low, so this code turns the LEDs off
   digitalWrite(lRED, HIGH);
   digitalWrite(lBLUE,HIGH);
   digitalWrite(lYELLOW,HIGH);
@@ -126,7 +144,6 @@ void loop(){
         //Flashes the LEDs to tell the user that the test is over
         flashLED(500);  
       }//END OF TEST
-
       else if(b1 == NAV){ //If the user wants to turn on the navigation lights
         //Which light does the user want to turn on or off
         if(b2 == ALL){ //All lights
@@ -161,41 +178,41 @@ void loop(){
         }
       }//END OF NAV
       else if(b1 == CONTROL){ // Going to be the most used
-        int Power = b2; //I explain these variables here: http://myquadcopters.blogspot.com/2014/06/mapping-thrust-x-y-tilts-and-turning.html
-        int XStrafe = b3;
-        int YStrafe = b4;
-        int Turn = b5;
-        
-        int fr = Power + YStrafe + XStrafe + Turn;
-        int fl = Power + YStrafe + XStrafe + Turn;
-        int br = Power + YStrafe + XStrafe + Turn;
-        int bl = Power + YStrafe + XStrafe + Turn;
-
-        //TODO: Stability/PID controller
-        
-        analogWrite(mFR,fr); //Writes motor commands from user input
-        analogWrite(mFL,fl);
-        analogWrite(mBR,br);
-        analogWrite(mBL,bl);
+        Power = b2; //I explain these variables here: http://myquadcopters.blogspot.com/2014/06/mapping-thrust-x-y-tilts-and-turning.html
+        XStrafe = b3;
+        YStrafe = b4;
+        Turn = b5;
       }//END OF CONTROL
     }//END OF SERIAL
 
-    int accel_x = AccelX(MPU6000);
-    int accel_y = AccelY(MPU6000);
-    int accel_z = AccelZ(MPU6000);
-    int gyro_x  = GyroX(MPU6000);
-    int gyro_y  = GyroY(MPU6000);
-    int gyro_z  = GyroZ(MPU6000);
+    accel_x = AccelX(MPU6000); //gets the Accel_x value
+    accel_y = AccelY(MPU6000); //gets the Accel_y value
+    accel_z = AccelZ(MPU6000); //gets the Accel_z value
+    gyro_x  = GyroX(MPU6000); // gets the Gyro_x value
+    gyro_y  = GyroY(MPU6000); // gets the Gyro_y value
+    gyro_z  = GyroZ(MPU6000); // gets the Gyro_z value
 
     int desired_x = 0; //Angles 
     int desired_y = 0; //Angles
     int desired_z = 0; //Angles
 
-    int actual_x = tan(accel_z/accel_x);
-    int actual_y = tan(accel_z/accel_y);
+    int actual_x = tan(accel_z/accel_x); //Angles
+    int actual_y = tan(accel_z/accel_y); //Angles
 
-    int error_x = actual_x - desired_x;
-    int error_y = actual_y - desired_y;
+    int error_x = actual_x - desired_x; //Difference in angles
+    int error_y = actual_y - desired_y; //Difference in angles
+    
+    fr = Power - YStrafe - XStrafe + Turn; // | 1 -1 -1  1 |
+    fl = Power - YStrafe + XStrafe - Turn; // | 1 -1  1  1 |
+    br = Power + YStrafe - XStrafe - Turn; // | 1 1  -1 -1 |
+    bl = Power + YStrafe + XStrafe + Turn; // | 1 1   1  1 |
+
+    //TODO: Stability/PID controller
+    
+    analogWrite(mFR,fr); //Writes motor commands from user input
+    analogWrite(mFL,fl);
+    analogWrite(mBR,br);
+    analogWrite(mBL,bl);
 
     //Serial.print(actual_x);
     //Serial.print("\t");
