@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 #!clear
 import optparse
+import sys
+import curses
 from Copter import Copter
 
 class Colors:
@@ -19,7 +21,7 @@ def getProperties():
     for line in lines:
         #TODO: get rid of \n
         l = line.split("=")
-        properties[l[0]] = l[1]
+        properties[l[0]] = l[1:-2]
     return properties
 
 if __name__ == "__main__":
@@ -61,6 +63,12 @@ if __name__ == "__main__":
             quad.unArm()
         elif x[0] == "isarm":
             print(quad.isArm())
+        elif x[0] == "listen":
+            while(1):
+                bs = '\b' * 30
+                sys.stdout.write(quad.angles())        
+        elif x[0] == "clear":
+            print('\033c')
         elif x[0] == "nav":
             if x[1] == "all":
                 if x[2] == "on":
@@ -111,6 +119,11 @@ properties:  return the properties
 arm:         arm the quadcopter
 unarm:       unarm the quadcopter
 isarm:       displays if the quadcopter is armed
+test:        Spins each motor to test if they work
+nav:
+    nav-all-on/off: turns all navigation lights either on or off
+    nav-fr/fl/br/bl-on/off: tunrs on a specific navigation light on or off
+
 """
             print(t)
         elif x[0] == "quit":
@@ -119,7 +132,7 @@ isarm:       displays if the quadcopter is armed
             pass
         
         else:
-            print(Colors.fail+"!!! Not Valid -- user 'help' !!!"+Colors.end)
+            print(Colors.fail+"!!! Not Valid -- use 'help' !!!"+Colors.end)
 
 
 

@@ -6,7 +6,7 @@ class Copter:
         self.properties = {}
         self.arm = False
         self.propFile = propFile
-        self.pilot = serial.Serial('/dev/ttyACM0',9600) #Try and automate the Com port
+        
     def Arm(self):
         self.arm = True
         self.pilot.write("\x00")
@@ -16,6 +16,7 @@ class Copter:
     def isArm(self):
         return self.arm
     def establish(self):
+        self.pilot = serial.Serial('/dev/ttyACM1',9600) #Try and automate the Com port
         self.pilot.write("\xFF\xFF\xFF\xFF")
     def killConnection(self):
         self.pilot.close()
@@ -26,6 +27,8 @@ class Copter:
         print(0x01)
     def stopGyro(self): #Not used
         print(0x02)
+    def angles(self):
+        return self.pilot.readline()
     def control(self,p,y,x,t):
         data = bytearray()
         print(int(p)+int(x))

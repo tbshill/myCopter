@@ -1,4 +1,0 @@
-test=tests
-version=0.1
-com=dev\ttyUSB
-name=Braden's Quad
