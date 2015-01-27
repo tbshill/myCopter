@@ -1,0 +1,28 @@
+
+
+
+
+
+
+
+
+	
+
+
+
+.build/mega2560/SPI/SPI.d : /usr/share/arduino/libraries/SPI/SPI.cpp
+	@mkdir -p .build/mega2560/SPI
+	@/usr/bin/avr-gcc -mmcu=atmega2560 -DF_CPU=16000000L -DARDUINO=101 -I/usr/share/arduino/hardware/arduino/cores/arduino -ffunction-sections -fdata-sections -g -Os -w -I/usr/share/arduino/hardware/arduino/variants/mega -I/usr/share/arduino/hardware/arduino/cores/arduino -I/usr/share/arduino/libraries/Ethernet -I/usr/share/arduino/libraries/Ethernet/utility -I/usr/share/arduino/libraries/SoftwareSerial -I/usr/share/arduino/libraries/SPI -I/usr/share/arduino/libraries/Wire -I/usr/share/arduino/libraries/Wire/utility -I/usr/share/arduino/libraries/EEPROM -I/usr/share/arduino/libraries/LiquidCrystal -I/usr/share/arduino/libraries/Stepper -I/usr/share/arduino/libraries/Servo -I/usr/share/arduino/libraries/SD -I/usr/share/arduino/libraries/SD/utility -I/usr/share/arduino/libraries/Firmata  -MM $^ > $@
+	
+	@printf ".build/mega2560/SPI/SPI.d .build/mega2560/SPI/" | cat - $@ > $@~ && mv $@~ $@
+
+
+
+.build/mega2560/SPI/dependencies.d : .build/mega2560/SPI/SPI.d
+	@echo [96mScanning dependencies of SPI[0m
+	@mkdir -p .build/mega2560/SPI
+	@cat $^ > $@;
+
+all : .build/mega2560/SPI/dependencies.d
+	@true
+
